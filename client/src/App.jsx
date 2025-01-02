@@ -3,7 +3,7 @@ import Chat from "./components/chat/Chat";
 import Detail from "./components/detail/Detail";
 import List from "./components/list/List";
 import Login from "./components/login/Login";
-import Notification from "./components/notification/notification";
+import Notification from "./components/notification/Notification";
 import { auth } from "./lib/firebase";
 import { useChatStore } from "./lib/chatStore";
 import { onAuthStateChanged } from "firebase/auth";
