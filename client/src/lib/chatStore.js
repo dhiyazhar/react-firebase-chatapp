@@ -5,6 +5,19 @@ class ChatStore {
     this.isCurrentUserBlocked = false;
     this.isReceiverBlocked = false;
     this.userStore = userStore;
+
+    this.subscribers = [];
+  }
+
+  subscribe(fn) {
+    this.subscribers.push(fn);
+    return () => {
+      this.subscribers = this.subscribers.filter(sub => sub !== fn);
+    };
+  }
+
+  notify() {
+    this.subscribers.forEach(sub => sub(this.getState()));
   }
 
   changeChat(chatId, user) {
@@ -26,10 +39,12 @@ class ChatStore {
       this.isCurrentUserBlocked = false;
       this.isReceiverBlocked = false;
     }
+    this.notify();
   }
 
   changeBlock() {
     this.isReceiverBlocked = !this.isReceiverBlocked;
+    this.notify();
   }
 
   resetChat() {
@@ -37,6 +52,7 @@ class ChatStore {
     this.user = null;
     this.isCurrentUserBlocked = false;
     this.isReceiverBlocked = false;
+    this.notify();
   }
 
   getState() {
@@ -49,5 +65,20 @@ class ChatStore {
   }
 }
 
-export const chatStoreInstance = new ChatStore();
-export const useChatStore = () => chatStoreInstance;
+// Assuming userStore is imported or available in this scope
+import { userStore } from './userStore';
+
+export const chatStoreInstance = new ChatStore(userStore);
+
+export const useChatStore = (selector) => {
+  const [state, setState] = useState(selector(chatStoreInstance.getState()));
+
+  useEffect(() => {
+    const unsubscribe = chatStoreInstance.subscribe((newState) => {
+      setState(selector(newState));
+    });
+    return unsubscribe;
+  }, [selector]);
+
+  return state;
+};
