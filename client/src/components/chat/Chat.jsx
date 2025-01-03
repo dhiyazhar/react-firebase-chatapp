@@ -11,7 +11,6 @@ import {
 import { db } from "../../lib/firebase";
 import { useChatStore } from "../../lib/chatStore";
 import { useUserStore } from "../../lib/userStore";
-import upload from "../../lib/upload";
 import { format } from "timeago.js";
 
 const Chat = () => {
@@ -63,9 +62,9 @@ const Chat = () => {
         let imgUrl = null;
 
         try {
-            if (img.file) {
-                imgUrl = await upload(img.file);
-            }
+            // if (img.file) {
+            //     imgUrl = await upload(img.file);
+            // }
 
             await updateDoc(doc(db, "chats", chatId), {
                 messages: arrayUnion({

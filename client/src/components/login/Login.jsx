@@ -14,7 +14,6 @@ import {
     setDoc,
     where,
 } from "firebase/firestore";
-import upload from "../../lib/upload";
 
 const Login = () => {
     const [avatar, setAvatar] = useState({
